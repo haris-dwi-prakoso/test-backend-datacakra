@@ -11,8 +11,11 @@ module.exports = {
      */
     return queryInterface.addColumn(
       'Users',
-      'isVerified',
-      Sequelize.BOOLEAN
+      'username',
+      {
+        type: Sequelize.STRING,
+        allowNull: false
+      }
     );
   },
 
@@ -25,7 +28,7 @@ module.exports = {
      */
     return queryInterface.removeColumn(
       'Users',
-      'isVerified'
+      'username'
     );
   }
 };
