@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "test",
+    "password": "admin",
+    "database": "datacakra",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "root",
+    "password": "admin",
+    "database": "datacakra_test",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "root",
+    "password": "admin",
+    "database": "datacakra_production",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
