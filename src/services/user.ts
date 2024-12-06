@@ -1,6 +1,7 @@
-import User from "../db/models/user";
+import User from "db/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { literal, Op } from "sequelize";
 
 export class UserService {
     async login(email: string, password: string) {
@@ -44,6 +45,23 @@ export class UserService {
             throw e;
         }
     };
+
+    async getRandomNotInIds(ids: number[]) {
+        try {
+            let result = await User.findOne({
+                order: literal('random()'),
+                where: {
+                    id: {
+                        [Op.notIn]: ids
+                    }
+                }
+            });
+            return result;
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
 
     async create(data: any) {
         try {

@@ -1,8 +1,8 @@
-import ProfileActivity from "../db/models/profileactivity";
+import ProfileActivity from "db/models/profileactivity";
 import moment from "moment";
 
 export class ProfileActivityService {
-    async create(data: ProfileActivity) {
+    async create(data: any) {
         try {
             let result = await ProfileActivity.create(data);
             return result;

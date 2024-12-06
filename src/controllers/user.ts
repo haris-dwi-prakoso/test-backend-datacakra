@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from 'services/user';
-import { CustomRequest } from '../middlewares/auth';
+import { CustomRequest } from 'middlewares/auth';
 
 const userService = new UserService();
 
@@ -8,9 +8,8 @@ export async function login(req: Request, res: Response) {
     try {
         const { email, password } = req.body
         let result = await userService.login(email, password);
-        if (result) {
-            res.status(200).json(result);
-        } else res.status(400).json({ message: "Email or password is incorrect." })
+        if (result) res.status(200).json(result);
+        else res.status(400).json({ message: "Email or password is incorrect." })
     } catch (e) {
         console.log(e);
         res.status(500).json(e);
