@@ -1,40 +1,84 @@
 import { Request, Response } from 'express';
 import { UserService } from 'services/user';
+import { CustomRequest } from '../middlewares/auth';
 
-export class UserController {
-    constructor(
-        private readonly userService: UserService
-    ) { }
+const userService = new UserService();
 
-    async login(req: Request, res: Response) {
-        try {
-            const { email, password } = req.body
-            let result = await this.userService.login(email, password);
-            if (result) {
-                res.status(200).json(result);
-            } else res.status(400).json({ message: "Email or password is incorrect." })
-        } catch (e) {
-            console.log(e);
-            res.status(500).json(e);
-        }
+export async function login(req: Request, res: Response) {
+    try {
+        const { email, password } = req.body
+        let result = await userService.login(email, password);
+        if (result) {
+            res.status(200).json(result);
+        } else res.status(400).json({ message: "Email or password is incorrect." })
+    } catch (e) {
+        console.log(e);
+        res.status(500).json(e);
     }
+}
 
-    async signup(req: Request, res: Response) {
-        try {
-            const { email, password, username } = req.body
-            let newUser = {
-                email: email,
-                password: password,
-                username: username,
-                isVerified: false,
-                isActive: true
-            }
-            let result = await this.userService.create(newUser);
-            if (result) res.status(200).json(result);
-        } catch (e) {
-            console.log(e);
-            res.status(500).json(e);
+export async function signup(req: Request, res: Response) {
+    try {
+        const { email, password, username } = req.body
+        let newUser = {
+            email: email,
+            password: password,
+            username: username,
+            isVerified: false,
+            isActive: true
         }
+        let result = await userService.create(newUser);
+        if (result) res.status(200).json(result);
+    } catch (e) {
+        console.log(e);
+        res.status(500).json(e);
     }
+}
 
+export async function getUser(req: CustomRequest, res: Response) {
+    try {
+        let result = await userService.findOneById(Number(req.params.id));
+        if (result) res.status(200).json(JSON.parse(JSON.stringify(result)));
+        else res.status(404).json({ message: "User not found." });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json(e);
+    }
+}
+
+export async function updateUser(req: CustomRequest, res: Response) {
+    try {
+        const { email, password, username, profilePicture, bio } = req.body;
+        if (req.params.id == req.token['id']) {
+            let user = await userService.findOneById(Number(req.params.id));
+            user = JSON.parse(JSON.stringify(user));
+            user.email = email ? email : user.email;
+            user.password = password ? password : user.password;
+            user.username = username ? username : user.username;
+            user.profilePicture = profilePicture ? profilePicture : user.profilePicture;
+            user.bio = bio ? bio : user.bio;
+            let result = await userService.update(user);
+            if (result) res.status(200).json({ message: "Successfully updated." });
+            else res.status(404).json({ message: "User not found." });
+        } else res.status(400).json({ message: "User id mismatch." });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json(e);
+    }
+}
+
+export async function deactivateUser(req: CustomRequest, res: Response) {
+    try {
+        if (req.params.id == req.token['id']) {
+            let user = await userService.findOneById(Number(req.params.id));
+            if (user.isActive) {
+                let result = await userService.deactivate(Number(req.params.id));
+                if (result) res.status(200).json({ message: "Successfully deactivated." });
+                else res.status(404).json({ message: "User not found." });
+            } else res.status(400).json({ message: "User already deactivated." });
+        } else res.status(400).json({ message: "User id mismatch." });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json(e);
+    }
 }

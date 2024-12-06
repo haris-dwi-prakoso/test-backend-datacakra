@@ -1,7 +1,6 @@
 import User from "../db/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-const saltRounds = 8;
 
 export class UserService {
     async login(email: string, password: string) {
@@ -48,7 +47,7 @@ export class UserService {
 
     async create(data: any) {
         try {
-            data.password = await bcrypt.hash(data.password, saltRounds);
+            data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
             let result = await User.create(data);
             return result;
         } catch (e) {
@@ -59,6 +58,7 @@ export class UserService {
 
     async update(data: any) {
         try {
+            data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
             let result = await User.update(
                 data,
                 {
