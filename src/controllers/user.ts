@@ -27,7 +27,7 @@ export async function signup(req: Request, res: Response) {
             isActive: true
         }
         let result = await userService.create(newUser);
-        if (result) res.status(200).json(result);
+        if (result) res.status(200).json(JSON.parse(JSON.stringify(result)));
     } catch (e) {
         console.log(e);
         res.status(500).json(e);
@@ -50,15 +50,37 @@ export async function updateUser(req: CustomRequest, res: Response) {
         const { email, password, username, profilePicture, bio } = req.body;
         if (req.params.id == req.token['id']) {
             let user = await userService.findOneById(Number(req.params.id));
-            user = JSON.parse(JSON.stringify(user));
-            user.email = email ? email : user.email;
-            user.password = password ? password : user.password;
-            user.username = username ? username : user.username;
-            user.profilePicture = profilePicture ? profilePicture : user.profilePicture;
-            user.bio = bio ? bio : user.bio;
-            let result = await userService.update(user);
-            if (result) res.status(200).json({ message: "Successfully updated." });
-            else res.status(404).json({ message: "User not found." });
+            if (user) {
+                user = JSON.parse(JSON.stringify(user));
+                user.email = email ? email : user.email;
+                user.password = password ? password : user.password;
+                user.username = username ? username : user.username;
+                user.profilePicture = profilePicture ? profilePicture : user.profilePicture;
+                user.bio = bio ? bio : user.bio;
+                let result = await userService.update(user);
+                if (result) res.status(200).json({ message: "Successfully updated." });
+                else res.status(500).json({ message: "Failed to update." });
+            } else res.status(404).json({ message: "User not found." });
+        } else res.status(400).json({ message: "User id mismatch." });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json(e);
+    }
+}
+
+export async function verifyUser(req: CustomRequest, res: Response) {
+    try {
+        if (req.params.id == req.token['id']) {
+            let user = await userService.findOneById(Number(req.params.id));
+            if (user) {
+                user = JSON.parse(JSON.stringify(user));
+                if (!user.isVerified) {
+                    user.isVerified = true;
+                    let result = await userService.update(user);
+                    if (result) res.status(200).json({ message: "Successfully verified." });
+                    else res.status(500).json({ message: "Failed to verify." });
+                } else res.status(403).json({ message: "User already verified." });
+            } else res.status(404).json({ message: "User not found." });
         } else res.status(400).json({ message: "User id mismatch." });
     } catch (e) {
         console.log(e);
@@ -74,7 +96,7 @@ export async function deactivateUser(req: CustomRequest, res: Response) {
                 let result = await userService.deactivate(Number(req.params.id));
                 if (result) res.status(200).json({ message: "Successfully deactivated." });
                 else res.status(404).json({ message: "User not found." });
-            } else res.status(400).json({ message: "User already deactivated." });
+            } else res.status(403).json({ message: "User already deactivated." });
         } else res.status(400).json({ message: "User id mismatch." });
     } catch (e) {
         console.log(e);
