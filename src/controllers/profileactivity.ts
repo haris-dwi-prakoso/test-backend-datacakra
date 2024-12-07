@@ -7,6 +7,12 @@ import moment from "moment";
 const profileActivityService = new ProfileActivityService();
 const userService = new UserService();
 
+/**
+ * Function to get user profile list, up to 10 - the number of profiles already
+ * interacted with for the day.
+ * @param req Request authorization header contains user data
+ * @param res Response body contains list of user profile data
+ */
 export async function getTarget(req: CustomRequest, res: Response) {
     try {
         const userId = Number(req.token['id']);
@@ -24,11 +30,17 @@ export async function getTarget(req: CustomRequest, res: Response) {
     }
 }
 
+/**
+ * Function to register activity from one user to the target user.
+ * @param req Request authorization header contains user data, body contains target user id and activity type
+ * @param res Response body contains activity registration result or error message
+ */
 export async function registerActivity(req: CustomRequest, res: Response) {
     try {
         const userId = Number(req.token['id']);
         const { targetUserId, activityType } = req.body;
         const date = moment().format('YYYY-MM-DD');
+        // Check if user has already interacted with target or not
         let alreadyDoneActivity = await profileActivityService.targetAlreadyHasActivityToday(userId, targetUserId);
         if (!alreadyDoneActivity) {
             let result = await profileActivityService.create({
@@ -37,7 +49,7 @@ export async function registerActivity(req: CustomRequest, res: Response) {
                 targetUserId: targetUserId,
                 activityType: activityType
             });
-            if (result) res.status(200).json(result);
+            if (result) res.status(201).json(result);
         } else res.status(403).json({ message: "User has already performed an action on this target." });
     } catch (e) {
         console.log(e);

@@ -4,6 +4,12 @@ import jwt from "jsonwebtoken";
 import { literal, Op } from "sequelize";
 
 export class UserService {
+    /**
+     * Data access layer function for login
+     * @param email 
+     * @param password 
+     * @returns user email & username alongside authorization token
+     */
     async login(email: string, password: string) {
         try {
             let matchUser = await User.findOne({
@@ -22,6 +28,11 @@ export class UserService {
         }
     }
 
+    /**
+     * Data access layer function to get user data
+     * @param id user id
+     * @returns user data
+     */
     async findOneById(id: number) {
         try {
             let result = await User.findOne({
@@ -34,18 +45,24 @@ export class UserService {
         }
     };
 
-    async findAllByFilter(filter: any) {
-        try {
-            let result = await User.findAll({
-                where: filter
-            });
-            return result;
-        } catch (e) {
-            console.log(e);
-            throw e;
-        }
-    };
+    // async findAllByFilter(filter: any) {
+    //     try {
+    //         let result = await User.findAll({
+    //             where: filter
+    //         });
+    //         return result;
+    //     } catch (e) {
+    //         console.log(e);
+    //         throw e;
+    //     }
+    // };
 
+    /**
+     * Data access layer function to get list of active users excluding specified user ids
+     * @param ids user ids to exclude
+     * @param limit number of users to get
+     * @returns user data list
+     */
     async getRandomNotInIds(ids: number[], limit: number) {
         try {
             let result = await User.findAll({
@@ -65,8 +82,14 @@ export class UserService {
         }
     }
 
+    /**
+     * Data access layer function to create user
+     * @param data user data to insert
+     * @returns inserted user data
+     */
     async create(data: any) {
         try {
+            // Hash password before inserting
             data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
             let result = await User.create(data);
             return result;
@@ -76,9 +99,17 @@ export class UserService {
         }
     };
 
+    /**
+     * Data access layer function to update user data
+     * @param data user data to update
+     * @returns update result
+     */
     async update(data: any) {
         try {
-            data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
+            // If password field is not null or undefined hash new password before updating
+            if (data.password !== null || data.password !== undefined) data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
+            // Else delete password key to avoid updating password to null or undefined
+            else delete data.password;
             let result = await User.update(
                 data,
                 {
@@ -92,6 +123,11 @@ export class UserService {
         }
     };
 
+    /**
+     * Data access layer function to deactivate user
+     * @param id user id to deactivate
+     * @returns update result
+     */
     async deactivate(id: number) {
         try {
             let result = await User.update(
