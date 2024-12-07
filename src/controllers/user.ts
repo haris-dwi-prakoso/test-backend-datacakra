@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { UserService } from 'services/user';
-import { CustomRequest } from 'middlewares/auth';
+import { UserService } from '../services/user';
+import { CustomRequest } from '../middlewares/auth';
 
 const userService = new UserService();
 

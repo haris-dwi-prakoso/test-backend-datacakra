@@ -3,8 +3,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { Request, Response } from 'express';
 import helmet from 'helmet';
-import { userRouter } from 'routes/user';
-import { profileActivityRouter } from 'routes/profileactivity';
+import { userRouter } from './routes/user';
+import { profileActivityRouter } from './routes/profileactivity';
 
 const port = Number(process.env.PORT) || 3000;
 const app = express();

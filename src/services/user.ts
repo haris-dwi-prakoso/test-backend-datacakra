@@ -1,4 +1,4 @@
-import User from "db/models/user";
+import User from "../db/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { literal, Op } from "sequelize";

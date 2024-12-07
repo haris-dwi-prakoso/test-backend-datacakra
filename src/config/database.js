@@ -1,4 +1,3 @@
-require('ts-node/register');
 const dotenv = (require("dotenv").config()).parsed;
 module.exports = {
     "development": {

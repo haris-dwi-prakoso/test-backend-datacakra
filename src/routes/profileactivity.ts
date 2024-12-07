@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as profileActivityController from 'controllers/profileactivity';
+import * as profileActivityController from '../controllers/profileactivity';
 import { auth } from '../middlewares/auth';
 
 export const profileActivityRouter = Router();

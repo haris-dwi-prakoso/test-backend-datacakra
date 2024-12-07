@@ -1,4 +1,4 @@
-import ProfileActivity from "db/models/profileactivity";
+import ProfileActivity from "../db/models/profileactivity";
 import moment from "moment";
 
 export class ProfileActivityService {

@@ -118,13 +118,13 @@ User.init({
   modelName: 'User',
 });
 
-User.hasMany(ProfileActivity, {
-  as: 'profileActivity',
-  foreignKey: {
-    name: 'userId',
-    allowNull: false
-  },
-  foreignKeyConstraint: true
-});
+// User.hasMany(ProfileActivity, {
+//   as: 'profileActivity',
+//   foreignKey: {
+//     name: 'userId',
+//     allowNull: false
+//   },
+//   foreignKeyConstraint: true
+// });
 
 export default User;

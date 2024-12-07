@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { ProfileActivityService } from 'services/profileactivity';
-import { UserService } from 'services/user';
-import { CustomRequest } from 'middlewares/auth';
+import { ProfileActivityService } from '../services/profileactivity';
+import { UserService } from '../services/user';
+import { CustomRequest } from '../middlewares/auth';
 import moment from "moment";
 
 const profileActivityService = new ProfileActivityService();
