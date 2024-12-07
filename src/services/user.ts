@@ -46,15 +46,17 @@ export class UserService {
         }
     };
 
-    async getRandomNotInIds(ids: number[]) {
+    async getRandomNotInIds(ids: number[], limit: number) {
         try {
-            let result = await User.findOne({
+            let result = await User.findAll({
                 order: literal('random()'),
                 where: {
                     id: {
                         [Op.notIn]: ids
-                    }
-                }
+                    },
+                    isActive: true
+                },
+                limit: limit
             });
             return result;
         } catch (e) {

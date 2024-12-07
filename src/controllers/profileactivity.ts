@@ -13,8 +13,10 @@ export async function getTarget(req: CustomRequest, res: Response) {
         let todayActivityList = await profileActivityService.findAndCountTodayByUserId(userId);
         if (todayActivityList.count < 10) {
             let todayActivityTargetIdList = todayActivityList.rows.map(x => x.id);
-            let nextTarget = await userService.getRandomNotInIds(todayActivityTargetIdList);
-            res.status(200).json(JSON.parse(JSON.stringify(nextTarget)));
+            let limit = 10 - todayActivityList.count
+            let nextTargets = await userService.getRandomNotInIds(todayActivityTargetIdList, limit);
+            let result = nextTargets.map(x => JSON.parse(JSON.stringify(x)));
+            res.status(200).json(result);
         } else res.status(403).json({ message: "User limit has been reached." });
     } catch (e) {
         console.log(e);
