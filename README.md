@@ -12,6 +12,18 @@
 - tests: Contains test script definitions
 - index.ts: The program handling app startup and connection
 
+## API Routes
+- User (`/user`)
+    - Sign up (`POST /signup`)
+    - Log in (`POST /login`)
+    - Get user data (`GET /:id`)
+    - Update user data (`PUT /:id`)
+    - Deactivate user (`DELETE /:id`)
+    - Verify user (`POST /verify/:id`)
+- Profile Activity (`/activity`)
+    - Get target list (`GET /next`)
+    - Register activity (`POST /action`)
+
 ## Running the service
 - Run `npm install` to install module dependencies needed
 - Set up a .env file following the example shown in .env.example
