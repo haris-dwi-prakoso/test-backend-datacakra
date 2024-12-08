@@ -20,6 +20,7 @@ export async function getTarget(req: CustomRequest, res: Response) {
         let todayActivityList = await profileActivityService.findAndCountTodayByUserId(userId);
         if (todayActivityList.count < 10) {
             let todayActivityTargetIdList = todayActivityList.rows.map(x => x.id);
+            todayActivityTargetIdList.push(userId);
             let limit = 10 - todayActivityList.count
             let nextTargets = await userService.getRandomNotInIds(todayActivityTargetIdList, limit);
             let result = nextTargets.map(x => JSON.parse(JSON.stringify(x)));
