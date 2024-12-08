@@ -8,7 +8,7 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc -p .",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watchAll  --detectOpenHandles"
   },
   "keywords": [],
   "author": "",

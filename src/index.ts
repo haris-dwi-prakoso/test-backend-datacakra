@@ -1,4 +1,3 @@
-import http from 'http';
 import express from 'express';
 import bodyParser from 'body-parser';
 import { Request, Response } from 'express';
@@ -27,8 +26,8 @@ app.get('/', async (req: Request, res: Response) => {
     });
 });
 
-const server = http.createServer(app);
-
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`API started at http://localhost:${port}`);
 });
+
+export default app;
