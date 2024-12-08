@@ -11,7 +11,7 @@ module.exports = {
      */
     return queryInterface.addColumn(
       'Users',
-      'isVerified',
+      'isActive',
       Sequelize.BOOLEAN
     );
   },
@@ -25,7 +25,7 @@ module.exports = {
      */
     return queryInterface.removeColumn(
       'Users',
-      'isVerified'
+      'isActive'
     );
   }
 };

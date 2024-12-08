@@ -9,10 +9,13 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    return queryInterface.addColumn(
+    return queryInterface.changeColumn(
       'Users',
-      'isVerified',
-      Sequelize.BOOLEAN
+      'password',
+      {
+        type: Sequelize.STRING,
+        allowNull: false
+      }
     );
   },
 
@@ -23,9 +26,13 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    return queryInterface.removeColumn(
+    return queryInterface.changeColumn(
       'Users',
-      'isVerified'
+      'password',
+      {
+        type: Sequelize.STRING,
+        allowNull: true
+      }
     );
   }
 };
