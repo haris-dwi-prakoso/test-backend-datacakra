@@ -1,7 +1,17 @@
 import User from "../db/models/user";
+import ProfileActivity from '../db/models/profileactivity';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { literal, Op } from "sequelize";
+
+User.hasMany(ProfileActivity, {
+    as: 'profileActivity',
+    foreignKey: {
+        name: 'userId',
+        allowNull: false
+    },
+    foreignKeyConstraint: true
+});
 
 export class UserService {
     /**
