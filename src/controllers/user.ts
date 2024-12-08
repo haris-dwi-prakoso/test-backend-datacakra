@@ -8,7 +8,7 @@ const userService = new UserService();
 /**
  * Login function
  * @param req Request body contains email and password to authenticate
- * @param res Response body contains user email and username data alongside authorization token
+ * @param res Response body contains user id, email and username data alongside authorization token
  */
 export async function login(req: Request, res: Response) {
     try {

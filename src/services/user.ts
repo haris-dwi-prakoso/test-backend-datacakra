@@ -29,7 +29,7 @@ export class UserService {
                 let matchPass = bcrypt.compareSync(password, matchUser.password);
                 if (matchPass) {
                     let token = jwt.sign({ id: matchUser.id, email: matchUser.email, username: matchUser.username }, process.env.SECRET_KEY);
-                    return { user: { email: matchUser.email, username: matchUser.username }, token: token };
+                    return { user: { id: matchUser.id, email: matchUser.email, username: matchUser.username }, token: token };
                 } else return null;
             } else return null;
         } catch (e) {
