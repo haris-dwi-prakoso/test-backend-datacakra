@@ -58,6 +58,32 @@ class ProfileActivity extends Model<ProfileActivityAttributes> implements Profil
   public activityType!: ActivityTypes;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  /**
+   * Helper method for defining associations.
+   * This method is not a part of Sequelize lifecycle.
+   * The `models/index` file will call this method automatically.
+   */
+  static associate(models: any) {
+    // define association here
+    ProfileActivity.belongsTo(models.User, {
+      as: 'user',
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      },
+      foreignKeyConstraint: true
+    });
+
+    ProfileActivity.belongsTo(models.User, {
+      as: 'targetUser',
+      foreignKey: {
+        name: 'targetUserId',
+        allowNull: false
+      },
+      foreignKeyConstraint: true
+    });
+  }
 }
 
 ProfileActivity.init({
@@ -89,23 +115,5 @@ ProfileActivity.init({
   sequelize: connection,
   modelName: 'ProfileActivity',
 });
-
-// ProfileActivity.belongsTo(User, {
-//   as: 'user',
-//   foreignKey: {
-//     name: 'userId',
-//     allowNull: false
-//   },
-//   foreignKeyConstraint: true
-// });
-
-// ProfileActivity.belongsTo(User, {
-//   as: 'targetUser',
-//   foreignKey: {
-//     name: 'targetUserId',
-//     allowNull: false
-//   },
-//   foreignKeyConstraint: true
-// });
 
 export default ProfileActivity;

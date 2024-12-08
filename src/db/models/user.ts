@@ -79,6 +79,18 @@ class User extends Model<UserAttributes> implements UserAttributes {
   public isActive!: boolean;
   public readonly createdAt?: Date | undefined;
   public readonly updatedAt?: Date | undefined;
+
+  static associate(models: any) {
+    // define association here
+    User.hasMany(models.ProfileActivity, {
+      as: 'profileActivity',
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      },
+      foreignKeyConstraint: true
+    });
+  }
 }
 
 User.init({
@@ -117,14 +129,5 @@ User.init({
   sequelize: connection,
   modelName: 'User',
 });
-
-// User.hasMany(ProfileActivity, {
-//   as: 'profileActivity',
-//   foreignKey: {
-//     name: 'userId',
-//     allowNull: false
-//   },
-//   foreignKeyConstraint: true
-// });
 
 export default User;
