@@ -31,7 +31,7 @@ export class UserService {
     /**
      * Data access layer function to get user data
      * @param id user id
-     * @returns user data
+     * @returns user data if found
      */
     async findOneById(id: number) {
         try {
@@ -44,6 +44,23 @@ export class UserService {
             throw e;
         }
     };
+
+    /**
+     * Data access layer function to find user by email
+     * @param email 
+     * @returns user data if found
+     */
+    async findOneByEmail(email: string) {
+        try {
+            let result = await User.findOne({
+                where: { email: email }
+            });
+            return result;
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
 
     // async findAllByFilter(filter: any) {
     //     try {
@@ -107,7 +124,7 @@ export class UserService {
     async update(data: any) {
         try {
             // If password field is not null or undefined hash new password before updating
-            if (data.password !== null || data.password !== undefined) data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
+            if (data.password != null || data.password != undefined) data.password = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
             // Else delete password key to avoid updating password to null or undefined
             else delete data.password;
             let result = await User.update(

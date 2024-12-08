@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ProfileActivityService } from '../services/profileactivity';
 import { UserService } from '../services/user';
 import { CustomRequest } from '../middlewares/auth';
+import ProfileActivity from '../db/models/profileactivity';
 import moment from "moment";
 
 const profileActivityService = new ProfileActivityService();
@@ -33,7 +34,7 @@ export async function getTarget(req: CustomRequest, res: Response) {
 /**
  * Function to register activity from one user to the target user.
  * @param req Request authorization header contains user data, body contains target user id and activity type
- * @param res Response body contains activity registration result or error message
+ * @param res Response body contains message of whether activity was successfully registered 
  */
 export async function registerActivity(req: CustomRequest, res: Response) {
     try {
@@ -43,13 +44,14 @@ export async function registerActivity(req: CustomRequest, res: Response) {
         // Check if user has already interacted with target or not
         let alreadyDoneActivity = await profileActivityService.targetAlreadyHasActivityToday(userId, targetUserId);
         if (!alreadyDoneActivity) {
-            let result = await profileActivityService.create({
-                userId: userId,
-                date: date,
-                targetUserId: targetUserId,
-                activityType: activityType
-            });
-            if (result) res.status(201).json(result);
+            let newActivity = new ProfileActivity();
+            newActivity.userId = userId;
+            newActivity.date = date;
+            newActivity.targetUserId = targetUserId;
+            newActivity.activityType = activityType;
+            let toInsert = JSON.parse(JSON.stringify(newActivity));
+            let result = await profileActivityService.create(toInsert);
+            if (result) res.status(201).json({ message: "Successfully registered activity." });
         } else res.status(403).json({ message: "User has already performed an action on this target." });
     } catch (e) {
         console.log(e);

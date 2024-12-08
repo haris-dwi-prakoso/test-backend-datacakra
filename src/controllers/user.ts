@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/user';
 import { CustomRequest } from '../middlewares/auth';
+import User from '../db/models/user';
 
 const userService = new UserService();
 
@@ -24,20 +25,24 @@ export async function login(req: Request, res: Response) {
 /**
  * Sign up function
  * @param req Request body contains email, username, and password of the user to be created
- * @param res Response body contains created user data
+ * @param res Response body contains message whether user was successfully registered
  */
 export async function signup(req: Request, res: Response) {
     try {
         const { email, password, username } = req.body
-        let newUser = {
-            email: email,
-            password: password,
-            username: username,
-            isVerified: false,
-            isActive: true
-        }
-        let result = await userService.create(newUser);
-        if (result) res.status(201).json(JSON.parse(JSON.stringify(result)));
+        let existingUser = await userService.findOneByEmail(email);
+        if (!existingUser) {
+            let newUser = new User();
+            newUser.email = email;
+            newUser.password = password;
+            newUser.username = username;
+            newUser.isVerified = false;
+            newUser.isActive = true;
+            let newUserData = JSON.parse(JSON.stringify(newUser));
+            console.log(newUserData);
+            let result = await userService.create(newUserData);
+            if (result) res.status(201).json({ message: "User successfully registered." });
+        } else res.status(400).json({ message: "A user with this email is already registered." })
     } catch (e) {
         console.log(e);
         res.status(500).json(e);
