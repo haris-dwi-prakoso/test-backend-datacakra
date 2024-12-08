@@ -1,5 +1,24 @@
 import ProfileActivity from "../db/models/profileactivity";
+import User from '../db/models/user';
 import moment from "moment";
+
+ProfileActivity.belongsTo(User, {
+    as: 'user',
+    foreignKey: {
+        name: 'userId',
+        allowNull: false
+    },
+    foreignKeyConstraint: true
+});
+
+ProfileActivity.belongsTo(User, {
+    as: 'targetUser',
+    foreignKey: {
+        name: 'targetUserId',
+        allowNull: false
+    },
+    foreignKeyConstraint: true
+});
 
 export class ProfileActivityService {
     /**
