@@ -25,7 +25,7 @@ export async function getTarget(req: CustomRequest, res: Response) {
             let nextTargets = await userService.getRandomNotInIds(todayActivityTargetIdList, limit);
             let result = nextTargets.map(x => JSON.parse(JSON.stringify(x)));
             res.status(200).json(result);
-        } else res.status(403).json({ message: "User limit has been reached." });
+        } else res.status(400).json({ message: "User limit has been reached." });
     } catch (e) {
         console.log(e);
         res.status(500).json(e);
@@ -42,18 +42,22 @@ export async function registerActivity(req: CustomRequest, res: Response) {
         const userId = Number(req.token['id']);
         const { targetUserId, activityType } = req.body;
         const date = moment().format('YYYY-MM-DD');
-        // Check if user has already interacted with target or not
-        let alreadyDoneActivity = await profileActivityService.targetAlreadyHasActivityToday(userId, targetUserId);
-        if (!alreadyDoneActivity) {
-            let newActivity = new ProfileActivity();
-            newActivity.userId = userId;
-            newActivity.date = date;
-            newActivity.targetUserId = targetUserId;
-            newActivity.activityType = activityType;
-            let toInsert = JSON.parse(JSON.stringify(newActivity));
-            let result = await profileActivityService.create(toInsert);
-            if (result) res.status(201).json({ message: "Successfully registered activity." });
-        } else res.status(403).json({ message: "User has already performed an action on this target." });
+        // Check if user is targeting self
+        let selfTarget = userId == targetUserId;
+        if (!selfTarget) {
+            // Check if user has already interacted with target or not
+            let alreadyDoneActivity = await profileActivityService.targetAlreadyHasActivityToday(userId, targetUserId);
+            if (!alreadyDoneActivity) {
+                let newActivity = new ProfileActivity();
+                newActivity.userId = userId;
+                newActivity.date = date;
+                newActivity.targetUserId = targetUserId;
+                newActivity.activityType = activityType;
+                let toInsert = JSON.parse(JSON.stringify(newActivity));
+                let result = await profileActivityService.create(toInsert);
+                if (result) res.status(201).json({ message: "Successfully registered activity." });
+            } else res.status(400).json({ message: "User has already performed an action on this target." });
+        } else res.status(400).json({ message: "Cannot target self for interaction." });
     } catch (e) {
         console.log(e);
         res.status(500).json(e);
