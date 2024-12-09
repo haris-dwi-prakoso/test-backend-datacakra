@@ -10,6 +10,7 @@ export async function createPayment(req: CustomRequest, res: Response) {
         const userId = req.token['id'];
         let newPayment = new Payment();
         newPayment.userId = userId;
+        newPayment.amount = Number(process.env.PAYMENT_AMOUNT);
         let result = await paymentService.create(JSON.parse(JSON.stringify(newPayment)));
         if (result) res.status(201).json(JSON.parse(JSON.stringify(result)));
     } catch (e) {

@@ -5,6 +5,7 @@ import connection from "../connection";
 interface PaymentAttributes {
     id?: number;
     userId: number;
+    amount: number;
     paid: boolean;
     createdAt?: Date,
     updatedAt?: Date
@@ -13,6 +14,7 @@ interface PaymentAttributes {
 class Payment extends Model<PaymentAttributes> implements PaymentAttributes {
     public id!: number;
     public userId!: number;
+    public amount!: number;
     public paid!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -26,6 +28,10 @@ Payment.init({
         type: DataTypes.NUMBER,
     },
     userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    amount: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
