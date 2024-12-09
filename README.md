@@ -23,6 +23,9 @@
 - Profile Activity (`/activity`)
     - Get target list (`GET /next`)
     - Register activity (`POST /action`)
+- Payment (`/payment`)
+    - Create payment (`POST /`)
+    - Mark as paid (`PUT /:id`)
 
 ## Running the service
 - Run `npm install` to install module dependencies needed

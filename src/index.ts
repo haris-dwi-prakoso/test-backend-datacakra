@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import cors from "cors";
 import { userRouter } from './routes/user';
 import { profileActivityRouter } from './routes/profileactivity';
+import { paymentRouter } from './routes/payment';
 
 const port = Number(process.env.PORT) || 3000;
 const app = express();
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/user', userRouter);
 app.use('/activity', profileActivityRouter);
+app.use('/payment', paymentRouter);
 app.get('/', async (req: Request, res: Response) => {
     res.status(200).json({
         message: 'Hello World'

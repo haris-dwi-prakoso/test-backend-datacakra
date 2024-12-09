@@ -129,7 +129,7 @@ export class UserService {
     /**
      * Data access layer function to update user data
      * @param data user data to update
-     * @returns update result
+     * @returns whether update was successful
      */
     async update(data: any) {
         try {
@@ -143,7 +143,7 @@ export class UserService {
                     where: { id: data.id }
                 }
             )
-            return result;
+            return (result[0] > 0);
         } catch (e) {
             console.log(e);
             throw e;
@@ -153,7 +153,7 @@ export class UserService {
     /**
      * Data access layer function to deactivate user
      * @param id user id to deactivate
-     * @returns update result
+     * @returns whether update was successful
      */
     async deactivate(id: number) {
         try {
@@ -165,7 +165,7 @@ export class UserService {
                     where: { id: id }
                 }
             )
-            return result;
+            return (result[0] > 0);
         } catch (e) {
             console.log(e);
             throw e;

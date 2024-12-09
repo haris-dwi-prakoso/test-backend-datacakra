@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/user';
+import { PaymentService } from '../services/payment';
 import { CustomRequest } from '../middlewares/auth';
 import User from '../db/models/user';
 
 const userService = new UserService();
+const paymentService = new PaymentService();
 
 /**
  * Login function
@@ -95,8 +97,8 @@ export async function updateUser(req: CustomRequest, res: Response) {
 
 /**
  * Function to verify user. As an actual payment API integration is currently
- * not within the scope of this test, the verification process is currently a
- * simple manual verification.
+ * not within the scope of this test, the verification process currently uses
+ * a mock payment service.
  * @param req Request authorization header contains user data, params contains id of user to be verified
  * @param res Response body contains message of whether verification was successful or not
  */
@@ -107,10 +109,13 @@ export async function verifyUser(req: CustomRequest, res: Response) {
             if (user) {
                 user = JSON.parse(JSON.stringify(user));
                 if (!user.isVerified) {
-                    user.isVerified = true;
-                    let result = await userService.update(user);
-                    if (result) res.status(200).json({ message: "Successfully verified." });
-                    else res.status(500).json({ message: "Failed to verify." });
+                    let payment = await paymentService.getOneByUserId(user.id);
+                    if (payment?.paid) {
+                        user.isVerified = true;
+                        let result = await userService.update(user);
+                        if (result) res.status(200).json({ message: "Successfully verified." });
+                        else res.status(500).json({ message: "Failed to verify." });
+                    } else res.status(400).json({ message: "User has not completed payment." });
                 } else res.status(400).json({ message: "User already verified." });
             } else res.status(404).json({ message: "User not found." });
         } else res.status(400).json({ message: "User id mismatch." });
@@ -133,7 +138,7 @@ export async function deactivateUser(req: CustomRequest, res: Response) {
             if (user.isActive) {
                 let result = await userService.deactivate(Number(req.params.id));
                 if (result) res.status(200).json({ message: "Successfully deactivated." });
-                else res.status(404).json({ message: "User not found." });
+                else res.status(500).json({ message: "Failed to deactivate." });
             } else res.status(403).json({ message: "User already deactivated." });
         } else res.status(400).json({ message: "User id mismatch." });
     } catch (e) {
