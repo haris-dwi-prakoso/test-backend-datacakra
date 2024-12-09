@@ -5,6 +5,11 @@ import Payment from '../db/models/payment';
 
 const paymentService = new PaymentService();
 
+/**
+ * Function to create new payment
+ * @param req Request authorization header contains user data
+ * @param res Created payment data
+ */
 export async function createPayment(req: CustomRequest, res: Response) {
     try {
         const userId = req.token['id'];
@@ -19,6 +24,11 @@ export async function createPayment(req: CustomRequest, res: Response) {
     }
 }
 
+/**
+ * Function to mark payment as paid
+ * @param req Request authorization header contains user data, params contains payment id
+ * @param res Message whether payment was successfully completed
+ */
 export async function markAsPaid(req: CustomRequest, res: Response) {
     try {
         const userId = req.token['id'];
