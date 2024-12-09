@@ -111,7 +111,7 @@ export async function verifyUser(req: CustomRequest, res: Response) {
                     let result = await userService.update(user);
                     if (result) res.status(200).json({ message: "Successfully verified." });
                     else res.status(500).json({ message: "Failed to verify." });
-                } else res.status(403).json({ message: "User already verified." });
+                } else res.status(400).json({ message: "User already verified." });
             } else res.status(404).json({ message: "User not found." });
         } else res.status(400).json({ message: "User id mismatch." });
     } catch (e) {
